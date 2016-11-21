@@ -12,8 +12,18 @@ from cached_property import cached_property
 TEXT_URL = 'https://github.com/boorstat/boorstat-files/raw/master/lit/dostoevsky/The_Idiot.txt'
 
 
-def objectify_paragraph(paragraph_text, paragraph_num):
-    pass
+def objectify_paragraph(paragraph_text):
+    paragraph = {
+        'text': paragraph_text
+    }
+
+    sentences = re.split('("|(?!St)\.)+', paragraph_text)
+    sentences = [s.strip() for s in sentences]
+    sentences = list(filter(None, sentences))
+
+    paragraph['sentences'] = sentences
+
+    return paragraph
 
 
 def objectify_chapter(chapter_text, chapter_num):
@@ -22,10 +32,17 @@ def objectify_chapter(chapter_text, chapter_num):
         'text': chapter_text
     }
 
+    paragraphs = re.split(r'^ {3}', chapter_text, flags=re.M)
+    paragraphs = [p.strip() for p in paragraphs][1:]
+
+    chapter['paragraphs'] = [objectify_paragraph(p) for p in paragraphs]
+
     return chapter
 
 
 def objectify_part(part_text, part_num):
+    part_text = re.sub(r'\n(?! {3})', '', part_text)
+
     part = {
         'title': 'PART {}'.format(roman.toRoman(part_num)),
         'text': part_text
@@ -62,10 +79,13 @@ def objectify_idiot(url=TEXT_URL):
     return idiot
 
 
-idiot = objectify_idiot()
+def main():
+    idiot = objectify_idiot()
+    quit()
 
+if __name__ == '__main__':
+    main()
 
-quit()
 
 
 class ClumsyIdiot(object):
