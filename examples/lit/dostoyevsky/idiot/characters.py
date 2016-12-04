@@ -3,6 +3,9 @@
 import re
 from pprint import pprint
 
+import plotly.plotly as py
+import plotly.graph_objs as go
+
 from boorstat.lit.dostoyevsky.idiot import idiot
 
 
@@ -42,19 +45,49 @@ def rate_characters(chapter):
 
 
 def parse_parts(roman):
-    characters = {}
+    data = []
 
     for part in roman['parts']:
         for chapter in part['chapters']:
-            characters['{} - {}'.format(part['title'], chapter['title'])] = rate_characters(chapter)
+            data.append({
+                'chapter': '{} - {}'.format(part['title'], chapter['title']),
+                'rates': rate_characters(chapter)})
 
-    pprint(characters)
+    return data
+
+
+def prepare_data(data):
+    traces = []
+
+    for character in data[0]['rates']:
+        traces.append(go.Scatter(
+            x=[],
+            y=[],
+            fill='tozeroy' if not traces else 'tonexty',
+            mode='none',
+            name=character))
+
+    for trace in traces:
+        for chapter in data:
+            trace['x'].append(chapter['chapter'])
+            trace['y'].append(chapter['rates'][trace['name']])
+
+    return traces
+
+
+def plot(traces):
+    layout = go.Layout(title='Idiot Characters', width=800, height=640)
+    fig = go.Figure(data=traces, layout=layout)
+
+    py.image.save_as(fig, filename='idiot-characters.png')
 
 
 def main():
     roman = idiot.from_json()
 
-    parse_parts(roman)
+    data = parse_parts(roman)
+    traces = prepare_data(data)
+    plot(traces)
 
 
 if __name__ == '__main__':
