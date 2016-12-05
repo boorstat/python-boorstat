@@ -4,6 +4,7 @@ import re
 from pprint import pprint
 
 import plotly.plotly as py
+import plotly
 import plotly.graph_objs as go
 
 from boorstat.lit.dostoyevsky.idiot import idiot
@@ -57,29 +58,58 @@ def parse_parts(roman):
 
 
 def prepare_data(data):
+    data = data
+
     traces = []
 
-    for character in data[0]['rates']:
+    for character in reversed(sorted(data[0]['rates'])):
         traces.append(go.Scatter(
             x=[],
             y=[],
-            fill='tozeroy' if not traces else 'tonexty',
+            text=[],
+            # fill='tozeroy' if not traces else 'tonexty',
+            fill='tonexty',
             mode='none',
+            hoverinfo='text',
             name=character))
 
+    sums = {}
     for trace in traces:
         for chapter in data:
+            sums[chapter['chapter']] = sums.get(chapter['chapter'], 0) + chapter['rates'][trace['name']]
             trace['x'].append(chapter['chapter'])
-            trace['y'].append(chapter['rates'][trace['name']])
+            trace['y'].append(sums[chapter['chapter']])
+            # trace['text'].append(trace['name'][:5])
+            trace['text'].append(
+                '{} - {}'.format(chapter['rates'][trace['name']], trace['name'])
+                if chapter['rates'][trace['name']] else '')
 
-    return traces
+    traces_with_liners = []
+    for trace in traces:
+        traces_with_liners.append(trace)
+        traces_with_liners.append(go.Scatter(
+            x=trace['x'],
+            y=trace['y'],
+            # y=[y + 5 for y in trace['y']],
+            # text=[''] * len(trace['x']),
+            fill='tonexty',
+            showlegend=False,
+            hoverinfo='none',
+            mode='none',
+            fillcolor='#ffffff'
+        ))
+
+    return traces_with_liners
 
 
 def plot(traces):
-    layout = go.Layout(title='Idiot Characters', width=800, height=640)
+    # layout = go.Layout(title='Idiot Characters', width=800, height=640)
+    layout = go.Layout(title='Idiot Characters')
     fig = go.Figure(data=traces, layout=layout)
 
-    py.image.save_as(fig, filename='idiot-characters.png')
+    # py.plot(fig, image='svg')
+    plotly.offline.plot(fig)
+    # py.image.save_as(fig, filename='idiot-characters.png')
 
 
 def main():
