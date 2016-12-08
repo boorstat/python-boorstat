@@ -11,11 +11,11 @@ from boorstat.lit.dostoyevsky.idiot import idiot
 
 
 CHARACTERS = {
-    'Prince Myshkin': ['Lev Nikolayevich', 'Lef Nicolayevitch', 'Myshkin', 'prince(?! S\.)'],
+    'Prince Myshkin': ['Lev Nikolayevich', 'Lef Nicolayevitch', 'Myshkin', r'prince(?! S\.)'],
     'Nastasya Philipovna': ['Nastasia Philipovna', 'Barashkova'],
     'Parfyon Semyonovich Rogozhin': ['Parfyon', 'Rogozhin', 'Rogojin'],
     'General Ivan Fyodorovich Yepanchin': ['general', 'Ivan Fyodorovich'],
-    'Elizaveta Prokofyevna': ['Elizaveta', 'Lizaveta', 'Prokofyevna'],
+    'Elizaveta Prokofyevna': ['Elizabetha', 'Prokofievna', r'Mrs\. Epanchin'],
     'Alexandra Ivanovna': ['Alexandra'],
     'Adelaida Ivanovna': ['Adelaida'],
     'Aglaya Ivanovna': ['Aglaya'],
@@ -27,10 +27,10 @@ CHARACTERS = {
     'Vera Lukyanovna': ['Vera'],
     'Ippolit Terentyev': ['Ippolit'],
     'Ivan Petrovich Ptitsyn': ['Ivan Petrovich', 'Ptitsin'],
-    'Evgeny Pavlovich Radomsky': ['Pavlovich', 'Radomsky'],
+    'Evgeny Pavlovich Radomsky': ['Pavlovitch', 'Radomski'],
     'Prince S.': ['prince S.'],
-    'Afanasy Ivanovich Totsky': ['Afanasy Ivanovich', 'Totsky'],
-    'Ferdyshchenko': ['Ferdyshchenko'],
+    'Afanasy Ivanovich Totsky': ['Afanasy Ivanovitch', 'Totski'],
+    'Ferdyshchenko': ['Ferdishenko'],
     'Keller': ['Keller'],
     'Antip Burdovsky': ['Antip', 'Burdovsky']
 }
@@ -70,6 +70,7 @@ def prepare_data(data):
             # fill='tozeroy' if not traces else 'tonexty',
             fill='tonexty',
             mode='none',
+            line={'shape': 'spline'},
             hoverinfo='text',
             name=character))
 
@@ -94,6 +95,7 @@ def prepare_data(data):
             # text=[''] * len(trace['x']),
             fill='tonexty',
             showlegend=False,
+            line={'shape': 'spline'},
             hoverinfo='none',
             mode='none',
             fillcolor='#ffffff'
