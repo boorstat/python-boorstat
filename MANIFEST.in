@@ -1,0 +1,4 @@
+recursive-include boorstat *
+include MANIFEST.in
+include README.md
+include requirements.txt
