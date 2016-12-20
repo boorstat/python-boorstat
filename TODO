@@ -1,0 +1,2 @@
+  * separate venv
+  * auto check requirements freeze every git push
