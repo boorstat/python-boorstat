@@ -1,5 +1,5 @@
-Boorstat
-=============
+# python-boorstat package
+This repository is helper for blog https://boorstat.github.io
 
 #### Stat scripts collection
 
